@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:AeroNexus}",
+            "name": "Debug AeroNexus",
+            "target": "AeroNexus",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug AeroNexus"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:AeroNexus}",
+            "name": "Release AeroNexus",
+            "target": "AeroNexus",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release AeroNexus"
+        }
+    ]
+}
