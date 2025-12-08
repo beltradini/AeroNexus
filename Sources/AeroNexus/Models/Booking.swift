@@ -29,19 +29,3 @@ final class Booking: Model, Content, @unchecked Sendable {
         self.status = status
     }
 }
-
-struct CreateBooking: Migration {
-    func prepare(on database: any Database) -> EventLoopFuture<Void> {
-        database.schema(Booking.schema)
-            .id()
-            .field("passenger_id", .uuid, .required, .references(Passenger.schema, "id", onDelete: .cascade))
-            .field("flight_id", .uuid, .required, .references(Flight.schema, "id", onDelete: .cascade))
-            .field("seat", .string, .required)
-            .field("status", .string, .required)
-            .create()
-    }
-
-    func revert(on database: any Database) -> EventLoopFuture<Void> {
-        database.schema(Booking.schema).delete()
-    }
-}

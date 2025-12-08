@@ -40,22 +40,3 @@ final class Flight: Model, Content, @unchecked Sendable {
         self.status = status
     }
 }
-
-struct CreateFlight: Migration {
-    func prepare(on database: any Database) -> EventLoopFuture<Void> {
-        database.schema(Flight.schema)
-            .id()
-            .field("number", .string, .required)
-            .field("origin", .string, .required)
-            .field("destination", .string, .required)
-            .field("departure_at", .datetime, .required)
-            .field("arrival_at", .datetime, .required)
-            .field("status", .string, .required)
-            .unique(on: "number")
-            .create()
-    }
-
-    func revert(on database: any Database) -> EventLoopFuture<Void> {
-        database.schema(Flight.schema).delete()
-    }
-}

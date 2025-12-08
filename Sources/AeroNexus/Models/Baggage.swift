@@ -29,20 +29,3 @@ final class Baggage: Model, Content, @unchecked Sendable {
         self.status = status
     }
 }
-
-struct CreateBaggage: Migration {
-    func prepare(on database: any Database) -> EventLoopFuture<Void> {
-        database.schema(Baggage.schema)
-            .id()
-            .field("tag", .string, .required)
-            .field("owner_id", .uuid, .required, .references(Passenger.schema, "id", onDelete: .cascade))
-            .field("flight_id", .uuid, .references(Flight.schema, "id", onDelete: .setNull))
-            .field("status", .string, .required)
-            .unique(on: "tag")
-            .create()
-    }
-
-    func revert(on database: any Database) -> EventLoopFuture<Void> {
-        database.schema(Baggage.schema).delete()
-    }
-}

@@ -3,8 +3,9 @@ import Logging
 import NIOCore
 import NIOPosix
 
-enum Entrypoint {
-    static func main() async throws {
+// Legacy entrypoint kept for reference; the active bootstrap uses Sources/AeroNexus/App/main.swift
+enum EntrypointLegacy {
+    static func mainLegacy() async throws {
         var env = try Environment.detect()
         try LoggingSystem.bootstrap(from: &env)
         

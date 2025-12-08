@@ -31,19 +31,3 @@ final class Passenger: Model, Content, @unchecked Sendable {
         self.documentNumber = documentNumber
     }
 }
-
-struct CreatePassenger: Migration {
-    func prepare(on database: any Database) -> EventLoopFuture<Void> {
-        database.schema(Passenger.schema)
-            .id()
-            .field("first_name", .string, .required)
-            .field("last_name", .string, .required)
-            .field("document_number", .string, .required)
-            .unique(on: "document_number")
-            .create()
-    }
-
-    func revert(on database: any Database) -> EventLoopFuture<Void> {
-        database.schema(Passenger.schema).delete()
-    }
-}
