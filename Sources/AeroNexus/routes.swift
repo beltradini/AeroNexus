@@ -9,4 +9,5 @@ func routes(_ app: Application) throws {
     try api.grouped("passengers").register(collection: PassengerController())
     try api.grouped("bookings").register(collection: BookingController())
     try api.grouped("baggage").register(collection: BaggageController())
+    try api.register(collection: IngestionController())
 }

@@ -20,10 +20,29 @@ public func configure(_ app: Application) throws {
 
     // Migrations
     app.migrations.add(CreateFlight())
+    app.migrations.add(CreateFlightUpdates())
+    app.migrations.add(CreateFlightUpdateSchedules())
     app.migrations.add(CreateGate())
     app.migrations.add(CreatePassenger())
     app.migrations.add(CreateBooking())
     app.migrations.add(CreateBaggage())
+
+    // Providers
+    var providers: [any FlightProvider] = [FakeProvider()]
+    if let providersUrlStr = Environment.get("REMOTE_PROVIDER_URL") {
+        let uri = URI(string: providersUrlStr)
+        providers.append(HTTPProvider(name: "http-provider", baseURL: uri))
+    }
+
+    // Ingestion pipeline and scheduler 
+    let pipeline = IngestionPipeline(providers: providers)
+    app.storage[PipelineKey.self] = pipeline
+
+    let scheduler = SchedulerService(app: app, pipeline: pipeline)
+    app.storage[SchedulerKey.self] = scheduler
+
+    // Start scheduler
+    scheduler.start()
 
     // Middlewares
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
