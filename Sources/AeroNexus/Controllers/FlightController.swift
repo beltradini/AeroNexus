@@ -2,6 +2,12 @@ import Vapor
 import Fluent
 
 struct FlightController: RouteCollection {
+    let timelineGenerator: TimelineGenerator
+
+    init(timelineGenerator: TimelineGenerator) {
+        self.timelineGenerator = timelineGenerator
+    }
+
     func boot(routes: any RoutesBuilder) throws {
         let r = routes.grouped("")
         r.get(use: index)
@@ -9,6 +15,7 @@ struct FlightController: RouteCollection {
         r.get(":flightID", use: get)
         r.put(":flightID", use: update)
         r.delete(":flightID", use: delete)
+        r.get(":flightID", "timeline", use: getTimeline)
     }
 
     func index(req: Request) async throws -> [Flight] {
@@ -53,6 +60,13 @@ struct FlightController: RouteCollection {
             }
         try await flight.delete(on: req.db)
         return .noContent
+    }
+
+    func getTimeline(req: Request) async throws -> [TimelineEvent] {
+        guard let flightId = req.parameters.get("flightID", as: UUID.self) else {
+            throw Abort(.badRequest, reason: "Invalid flight ID")
+        }
+        return try await timelineGenerator.generateTimeline(for: flightId)
     }
 }
 

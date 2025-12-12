@@ -26,6 +26,7 @@ public func configure(_ app: Application) throws {
     app.migrations.add(CreatePassenger())
     app.migrations.add(CreateBooking())
     app.migrations.add(CreateBaggage())
+    app.migrations.add(CreateTimelineEvents())
 
     // Providers
     var providers: [any FlightProvider] = [FakeProvider()]
@@ -43,6 +44,11 @@ public func configure(_ app: Application) throws {
 
     // Start scheduler
     scheduler.start()
+
+    // Services
+    let flightService = DatabaseFlightService(db: app.db)
+    let timelineGenerator = TimelineGenerator(flightService: flightService)
+    app.storage[TimelineGeneratorKey.self] = timelineGenerator
 
     // Middlewares
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))

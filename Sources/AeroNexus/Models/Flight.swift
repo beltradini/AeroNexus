@@ -24,6 +24,21 @@ final class Flight: Model, Content, @unchecked Sendable {
 
     @Field(key: "status")
     var status: String
+    
+    @Field(key: "departure_airport")
+    var departureAirport: String
+    
+    @Field(key: "arrival_airport")
+    var arrivalAirport: String
+    
+    @Field(key: "aircraft_type")
+    var aircraftType: String
+    
+    @Field(key: "schedule_departure")
+    var scheduledDeparture: Date
+    
+    @Field(key: "schedule_arrival")
+    var scheduledArrival: Date
 
     @Children(for: \.$flight)
     var bookings: [Booking]

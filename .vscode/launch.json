@@ -1,24 +1,26 @@
 {
     "configurations": [
         {
-            "type": "swift",
+            "type": "lldb",
             "request": "launch",
             "args": [],
             "cwd": "${workspaceFolder:AeroNexus}",
             "name": "Debug AeroNexus",
             "target": "AeroNexus",
             "configuration": "debug",
-            "preLaunchTask": "swift: Build Debug AeroNexus"
+            "preLaunchTask": "swift: Build Debug AeroNexus",
+            "program": "${workspaceFolder:AeroNexus}/.build/debug/AeroNexus"
         },
         {
-            "type": "swift",
+            "type": "lldb",
             "request": "launch",
             "args": [],
             "cwd": "${workspaceFolder:AeroNexus}",
             "name": "Release AeroNexus",
             "target": "AeroNexus",
             "configuration": "release",
-            "preLaunchTask": "swift: Build Release AeroNexus"
+            "preLaunchTask": "swift: Build Release AeroNexus",
+            "program": "${workspaceFolder:AeroNexus}/.build/release/AeroNexus"
         }
     ]
 }

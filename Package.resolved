@@ -1,5 +1,5 @@
 {
-  "originHash" : "b8d5d6579104de08d00f1cf41599b17ec73367eb384489e257477fd3aa3f2884",
+  "originHash" : "19312a7916cfb0af7b6c19fc1be17b36b6ca51c4c27b6ae78b92886ac170eaf7",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/fluent-kit.git",
       "state" : {
-        "revision" : "8baacd7e8f7ebf68886c496b43bbe6cdcc5b57e0",
-        "version" : "1.52.2"
+        "revision" : "0272fdaf7cf6f482c2799026c0695f5fe40e3e8c",
+        "version" : "1.53.0"
       }
     },
     {
@@ -53,6 +53,15 @@
       "state" : {
         "revision" : "59bff45a41d1ece1950bb8a6e0006d88c1fb6e69",
         "version" : "2.12.0"
+      }
+    },
+    {
+      "identity" : "fluent-sqlite-driver",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/fluent-sqlite-driver.git",
+      "state" : {
+        "revision" : "73529a63ab11c7fe87da17b5a67a1b1f58c020f8",
+        "version" : "4.8.1"
       }
     },
     {
@@ -96,8 +105,26 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/sql-kit.git",
       "state" : {
-        "revision" : "1a9ab0523fb742d9629558cede64290165c4285b",
-        "version" : "3.33.2"
+        "revision" : "c0ea243ffeb8b5ff9e20a281e44003c6abb8896f",
+        "version" : "3.34.0"
+      }
+    },
+    {
+      "identity" : "sqlite-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/sqlite-kit.git",
+      "state" : {
+        "revision" : "f35a863ecc2da5d563b836a9a696b148b0f4169f",
+        "version" : "4.5.2"
+      }
+    },
+    {
+      "identity" : "sqlite-nio",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/sqlite-nio.git",
+      "state" : {
+        "revision" : "2ab61385b70da8ed74958ce62fa9ebf0359cb08b",
+        "version" : "1.12.2"
       }
     },
     {
@@ -222,8 +249,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-extras.git",
       "state" : {
-        "revision" : "a46134557b0aec5e94e2de13a9dfc6474caf4c18",
-        "version" : "1.31.1"
+        "revision" : "1c90641b02b6ab47c6d0db2063a12198b04e83e2",
+        "version" : "1.31.2"
       }
     },
     {
