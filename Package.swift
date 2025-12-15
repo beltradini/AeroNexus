@@ -16,6 +16,8 @@ let package = Package(
         .package(url: "https://github.com/vapor/vapor.git", from: "4.115.0"),
         .package(url: "https://github.com/vapor/fluent.git", from: "4.9.0"),
         .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
+        .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),
+        .package(url: "https://github.com/swift-server/RediStack.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.0")
@@ -27,6 +29,8 @@ let package = Package(
             dependencies: [
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+                .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver"),
+                .product(name: "RediStack", package: "RediStack"),
                 .product(name: "Logging", package: "swift-log")
             ],
             path: "Sources/AeroNexusCore",
@@ -39,6 +43,7 @@ let package = Package(
             dependencies: [
                 .target(name: "AeroNexusCore"),
                 .product(name: "Vapor", package: "vapor"),
+                .product(name: "RediStack", package: "RediStack"),
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOPosix", package: "swift-nio")
             ],

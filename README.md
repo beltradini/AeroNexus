@@ -1,23 +1,53 @@
 # AeroNexus
 
-**Professional Flight & Airport Management API**
+**Professional Flight & Airport Management API with Real-time Capabilities**
 
-A minimal, production-ready REST API for flight operations built with Swift, Vapor, and PostgreSQL.
+A modern flight tracking and management system built with Swift, Vapor, PostgreSQL, and Redis.
 
 ## Features
 
-- Flight, Gate, Passenger, Booking, and Baggage management
-- RESTful API with JSON responses
-- PostgreSQL database with Fluent ORM
-- Docker containerized deployment
-- Comprehensive test suite
-- Timeline generation for flight events
+- **Real-time Flight Tracking**: Monitor flights with live updates
+- **Comprehensive Data Model**: Aircraft, airports, flights, bookings, and more
+- **Advanced Caching**: Redis-powered caching for high performance
+- **State Management**: FlightStateEngine with snapshots and streaming
+- **Timeline Generation**: Detailed flight event timelines
+- **Modular Architecture**: Clean separation of concerns
+- **Docker Support**: Easy deployment with PostgreSQL and Redis
+
+## Architecture
+
+```
+┌───────────────────────────────────────────────────────────────┐
+│                        AeroNexus Architecture                  │
+├─────────────────┬─────────────────┬─────────────────┬─────────────┤
+│  AeroNexusCore   │  AeroNexusAPI   │  AeroNexusCLI   │  Database   │
+│  (Business Logic)│  (HTTP API)     │  (CLI Tools)    │  (PostgreSQL)│
+└─────────────────┴─────────────────┴─────────────────┴─────────────┘
+                                      │
+                                      ▼
+┌───────────────────────────────────────────────────────────────┐
+│                            Redis Cache                          │
+│  ┌─────────────┐    ┌─────────────┐    ┌───────────────────┐  │
+│  │ Flight Cache │    │ Timeline    │    │ State Snapshots   │  │
+│  │             │    │ Cache       │    │                   │  │
+│  └─────────────┘    └─────────────┘    └───────────────────┘  │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │                 Pub/Sub Channels                       │  │
+│  │  ┌─────────────────┐                                    │  │
+│  │  │ flight:state:updates                              │  │
+│  │  └─────────────────┘                                    │  │
+│  └─────────────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────────────┘
+```
 
 ## Technology Stack
 
-- **Language**: Swift 6
-- **Framework**: Vapor 4
-- **Database**: PostgreSQL (Fluent ORM)
+- **Backend**: Swift 6, Vapor 4
+- **Database**: PostgreSQL (production), SQLite (development)
+- **Cache**: Redis with RediStack
+- **API**: RESTful endpoints with JSON
+- **Real-time**: Server-Sent Events (SSE)
+- **Deployment**: Docker with multi-container setup
 - **Containerization**: Docker & Docker Compose
 - **Testing**: XCTest with XCTVapor
 

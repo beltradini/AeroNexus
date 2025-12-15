@@ -1,6 +1,7 @@
 import Vapor 
 import Fluent
-import FluentSQLiteDriver
+import FluentPostgresDriver
+import RediStack
 import AeroNexusCore
 
 struct AppConfigurator {
@@ -8,12 +9,37 @@ struct AppConfigurator {
         // Environment 
         app.logger.logLevel = .info
 
-        // Database - Using SQLite
-        app.databases.use(.sqlite(
-            .file("db.sqlite")
-        ), as: .sqlite)
+        // Database - Using PostgreSQL
+        let postgresConfig: PostgreSQLConfiguration
+        if let host = Environment.get("DATABASE_HOST"),
+           let username = Environment.get("DATABASE_USERNAME"),
+           let password = Environment.get("DATABASE_PASSWORD"),
+           let database = Environment.get("DATABASE_NAME") {
+            postgresConfig = PostgreSQLConfiguration(
+                hostname: host,
+                port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? 5432,
+                username: username,
+                password: password,
+                database: database,
+                tls: .disable
+            )
+        } else {
+            // Fallback to SQLite for development
+            postgresConfig = PostgreSQLConfiguration(
+                hostname: "localhost",
+                port: 5432,
+                username: "vapor_username",
+                password: "vapor_password",
+                database: "vapor_database",
+                tls: .disable
+            )
+        }
+        
+        app.databases.use(.postgres(configuration: postgresConfig), as: .psql)
 
         // Migrations
+        app.migrations.add(CreateAircraft())
+        app.migrations.add(CreateAirport())
         app.migrations.add(CreateFlight())
         app.migrations.add(CreateFlightUpdates())
         app.migrations.add(CreateFlightUpdateSchedules())
@@ -40,9 +66,36 @@ struct AppConfigurator {
         // Start scheduler
         scheduler.start()
 
-        // Services
-        let flightService = DatabaseFlightService(db: app.db)
-        let timelineGenerator = TimelineGenerator(flightService: flightService)
+        // Redis Configuration
+        let redisConfig: RedisConfiguration
+        if let redisHost = Environment.get("REDIS_HOST"),
+           let redisPort = Environment.get("REDIS_PORT").flatMap(Int.init(_:)) {
+            redisConfig = RedisConfiguration(hostname: redisHost, port: redisPort)
+        } else {
+            redisConfig = RedisConfiguration(hostname: "localhost", port: 6379)
+        }
+        
+        let redis = try RedisClient(configuration: redisConfig, boundEventLoop: app.eventLoopGroup.next())
+        let redisService = RedisService(redis: redis, logger: app.logger, eventLoopGroup: app.eventLoopGroup)
+        app.storage[RedisServiceKey.self] = redisService
+
+        // Flight State Engine
+        let databaseFlightService = DatabaseFlightService(db: app.db)
+        let cachedFlightService = CachedFlightService(
+            databaseService: databaseFlightService,
+            redisService: redisService,
+            logger: app.logger
+        )
+        
+        let flightStateEngine = FlightStateEngine(
+            redisService: redisService,
+            flightService: cachedFlightService,
+            logger: app.logger
+        )
+        app.storage[FlightStateEngineKey.self] = flightStateEngine
+
+        // Timeline Generator with cached service
+        let timelineGenerator = TimelineGenerator(flightService: cachedFlightService)
         app.storage[TimelineGeneratorKey.self] = timelineGenerator
 
         // Middlewares

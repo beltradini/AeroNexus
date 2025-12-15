@@ -44,11 +44,20 @@ struct FlightController: RouteCollection {
     }
 
     func get(req: Request) async throws -> Flight {
-        guard let id = req.parameters.get("flightID", as: UUID.self),
-            let flight = try await Flight.find(id, on: req.db) else {
-                throw Abort(.notFound)
-            }
-            return flight
+        guard let id = req.parameters.get("flightID", as: UUID.self) else {
+            throw Abort(.notFound)
+        }
+        
+        // Use cached flight service if available
+        if let flightService = req.application.storage[FlightStateEngineKey.self] {
+            return try await flightService.flightService.getFlight(id)
+        }
+        
+        // Fallback to direct database access
+        guard let flight = try await Flight.find(id, on: req.db) else {
+            throw Abort(.notFound)
+        }
+        return flight
     }
 
     func update(req: Request) async throws -> Flight {
