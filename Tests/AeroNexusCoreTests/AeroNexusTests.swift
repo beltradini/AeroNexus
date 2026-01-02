@@ -19,9 +19,9 @@ final class FlightTests: XCTestCase {
             arrivalAt: Date().addingTimeInterval(3600),
             status: "scheduled"
         )
-        try app.test(.POST, "/v1/flights", beforeRequest: { req in 
+        try app.test(.POST, "/v1/flights", beforeRequest: { req in
             try req.content.encode(create)
-        }, afterResponse: { res in 
+        }, afterResponse: { res in
             XCTAssertEqual(res.status, .created)
             let flight = try res.content.decode(Flight.self)
             XCTAssertEqual(flight.number, "AN123")

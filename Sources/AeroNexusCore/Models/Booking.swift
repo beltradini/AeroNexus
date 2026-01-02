@@ -7,6 +7,9 @@ public final class Booking: Model, Content, @unchecked Sendable {
     @ID(key: .id)
     public var id: UUID?
 
+    @Field(key: "updated_at")
+    var updatedAt: Date?
+
     @Parent(key: "passenger_id")
     var passenger: Passenger
 
