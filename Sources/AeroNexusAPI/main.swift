@@ -21,18 +21,13 @@ struct AppConfigurator {
                 username: username,
                 password: password,
                 database: database,
-                tls: .disable
+                tls: .prefer(try .make(configuration: .clientDefault()))
             )
         } else {
             // Fallback to SQLite for development
-            postgresConfig = PostgreSQLConfiguration(
-                hostname: "localhost",
-                port: 5432,
-                username: "vapor_username",
-                password: "vapor_password",
-                database: "vapor_database",
-                tls: .disable
-            )
+            app.logger.warning("Database environment variables not set, using SQLite fallback")
+            app.databases.use(.sqlite(.file("db.sqlite")), as: .sqlite)
+            return // Skip PostgreSQL configuration
         }
         
         app.databases.use(.postgres(configuration: postgresConfig), as: .psql)

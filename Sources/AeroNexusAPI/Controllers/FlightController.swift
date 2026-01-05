@@ -1,7 +1,6 @@
 import Vapor
 import AeroNexusCore
 import Fluent
-import AeroNexusCore
 
 struct FlightController: RouteCollection {
     let timelineGenerator: TimelineGenerator

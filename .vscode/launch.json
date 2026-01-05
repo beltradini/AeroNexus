@@ -21,6 +21,46 @@
             "configuration": "release",
             "preLaunchTask": "swift: Build Release AeroNexus",
             "program": "${workspaceFolder:AeroNexus}/.build/release/AeroNexus"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:AeroNexus}",
+            "name": "Debug AeroNexusAPI",
+            "target": "AeroNexusAPI",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug AeroNexusAPI"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:AeroNexus}",
+            "name": "Release AeroNexusAPI",
+            "target": "AeroNexusAPI",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release AeroNexusAPI"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:AeroNexus}",
+            "name": "Debug AeroNexusCLI",
+            "target": "AeroNexusCLI",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug AeroNexusCLI"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:AeroNexus}",
+            "name": "Release AeroNexusCLI",
+            "target": "AeroNexusCLI",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release AeroNexusCLI"
         }
     ]
 }

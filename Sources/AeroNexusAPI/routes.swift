@@ -4,7 +4,9 @@ import Vapor
 func routes(_ app: Application) throws {
     let api = app.grouped("v1")
 
-    let timelineGenerator = app.storage[TimelineGeneratorKey.self]!
+    guard let timelineGenerator = app.storage[TimelineGeneratorKey.self] else {
+        fatalError("TimelineGenerator not configured. Ensure AppConfigurator.configure() was called.")
+    }
     try api.grouped("flights").register(collection: FlightController(timelineGenerator: timelineGenerator))
     try api.grouped("flights").register(collection: FlightStateController())
     try api.grouped("gates").register(collection: GateController())

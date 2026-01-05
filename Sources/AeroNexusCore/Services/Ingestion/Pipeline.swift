@@ -1,6 +1,23 @@
 import Vapor
 import Fluent
 
+public enum IngestionError: Error, LocalizedError {
+    case providerError(String, any Error)
+    case fetchError(String, any Error)
+    case allProvidersFailed([any Error])
+    
+    public var errorDescription: String? {
+        switch self {
+        case .providerError(let provider, let error):
+            return "Provider '\(provider)' processing error: \(error.localizedDescription)"
+        case .fetchError(let provider, let error):
+            return "Provider '\(provider)' fetch error: \(error.localizedDescription)"
+        case .allProvidersFailed(let errors):
+            return "All providers failed with \(errors.count) errors"
+        }
+    }
+}
+
 public final class IngestionPipeline: @unchecked Sendable {
     let providers: [any FlightProvider]
 
@@ -10,18 +27,33 @@ public final class IngestionPipeline: @unchecked Sendable {
 
     func ingestAll(req: Request) async throws -> [FlightUpdate] {
         var results: [FlightUpdate] = []
+        var errors: [any Error] = []
+        
         for provider in providers {
-            let raw = try await provider.fetchUpdates(req: req)
-            for p in raw {
-                do {
-                    let packet = try provider.normalize(p, req: req)
-                    let row = try await persist(packet: packet, req: req)
-                    results.append(row)
-                } catch {
-                    req.logger.error("Failed to process packet from provider \(provider.name): \(error)")
+            do {
+                let raw = try await provider.fetchUpdates(req: req)
+                for p in raw {
+                    do {
+                        let packet = try provider.normalize(p, req: req)
+                        let row = try await persist(packet: packet, req: req)
+                        results.append(row)
+                    } catch {
+                        let providerError = IngestionError.providerError(provider.name, error)
+                        req.logger.error("Failed to process packet from provider \(provider.name): \(error)")
+                        errors.append(providerError)
+                    }
                 }
+            } catch {
+                let fetchError = IngestionError.fetchError(provider.name, error)
+                req.logger.error("Failed to fetch updates from provider \(provider.name): \(error)")
+                errors.append(fetchError)
             }
         }
+        
+        if !errors.isEmpty && results.isEmpty {
+            throw IngestionError.allProvidersFailed(errors)
+        }
+        
         return results
     }
 
